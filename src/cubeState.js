@@ -1,4 +1,4 @@
-// https://github.com/abhinavdogra21/Rubix-Cube-Solver
+// https://github.com/Lucky-Malik/Interactive-Rubix-Cube-Solver
 // Cube state management and move logic
 export class CubeState {
   constructor() {
@@ -14,6 +14,28 @@ export class CubeState {
       top: ["W", "W", "W", "W", "W", "W", "W", "W", "W"], // White
       bottom: ["Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y"], // Yellow
     };
+  }
+
+  clone() {
+    const next = new CubeState();
+    Object.entries(this.faces).forEach(([face, stickers]) => {
+      next.faces[face] = [...stickers];
+    });
+    return next;
+  }
+
+  static cloneFrom(source) {
+    if (source instanceof CubeState) {
+      return source.clone();
+    }
+
+    const next = new CubeState();
+    if (source?.faces) {
+      Object.entries(source.faces).forEach(([face, stickers]) => {
+        next.faces[face] = [...stickers];
+      });
+    }
+    return next;
   }
 
   // Static method to create a CubeState object from a 54-character string
@@ -490,4 +512,21 @@ export class CubeState {
   }
 }
 
+export function parseMoveSequence(moveString) {
+  if (!moveString || typeof moveString !== "string") {
+    return [];
+  }
 
+  return moveString.trim().split(/\s+/).filter((move) => move.length > 0);
+}
+
+export function invertMove(move) {
+  if (!move) return move;
+  if (move.endsWith("'")) return move.slice(0, -1);
+  if (move.endsWith("2")) return move;
+  return `${move}'`;
+}
+
+export function invertMoveSequence(moves) {
+  return [...moves].reverse().map((move) => invertMove(move));
+}

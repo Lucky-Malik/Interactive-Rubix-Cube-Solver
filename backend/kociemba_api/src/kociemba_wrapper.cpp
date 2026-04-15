@@ -1,4 +1,4 @@
-// https://github.com/abhinavdogra21/Rubix-Cube-Solver
+// https://github.com/Lucky-Malik/Interactive-Rubix-Cube-Solver
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include "Solver/solve.h"

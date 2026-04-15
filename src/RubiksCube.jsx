@@ -1,4 +1,4 @@
-// https://github.com/abhinavdogra21/Rubix-Cube-Solver
+// https://github.com/Lucky-Malik/Interactive-Rubix-Cube-Solver
 import React, { useRef, useEffect, useCallback, forwardRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -257,4 +257,3 @@ const RubiksCube = forwardRef(({ cubeState }, ref) => {
 });
 
 export default RubiksCube;
-

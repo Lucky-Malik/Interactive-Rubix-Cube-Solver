@@ -1,4 +1,4 @@
-# https://github.com/abhinavdogra21/Rubix-Cube-Solver
+# https://github.com/Lucky-Malik/Interactive-Rubix-Cube-Solver
 #!/usr/bin/env python3
 """
 Flask API for Kociemba Rubik's Cube Solver
@@ -79,4 +79,3 @@ def api_solve_cube():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
-

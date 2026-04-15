@@ -7,7 +7,7 @@ A full-stack Rubik's Cube solver with 3D visualization, optimal Kociemba algorit
   Your browser does not support the video tag.
 </video>
 
-## ✨ Features
+## Features
 - **3D Interactive Cube Visualization**: Real-time 3D rendering with smooth animations
 - **Optimal Kociemba Algorithm**: Fast, optimal solutions using C++ backend
 - **Random Scramble Generation**: Generate and apply realistic scrambles
@@ -16,11 +16,11 @@ A full-stack Rubik's Cube solver with 3D visualization, optimal Kociemba algorit
 - **Camera Detection**: Advanced OpenCV-based cube state detection
 - **Cross-platform**: Works on macOS and Windows
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Frontend Only (Recommended)
 ```sh
-git clone https://github.com/abhinavdogra21/Rubix-Cube-Solver.git
+git clone https://github.com/Lucky-Malik/Interactive-Rubix-Cube-Solver.git
 cd Rubix-Cube-Solver
 npm install
 npm run dev
@@ -29,7 +29,7 @@ Open http://localhost:5173
 
 > The frontend includes a fallback solver that works for scrambles generated with the "Random Scramble" button. For custom cube configurations, you'll need the backend.
 
-## 🔧 Full Setup (With Backend)
+## Full Setup (With Backend)
 
 ### Prerequisites
 - **Node.js** 16+ and npm
@@ -44,7 +44,7 @@ xcode-select --install
 brew install cmake python@3.11 node
 
 # Clone and build
-git clone https://github.com/abhinavdogra21/Rubix-Cube-Solver.git
+git clone https://github.com/Lucky-Malik/Interactive-Rubix-Cube-Solver.git
 cd Rubix-Cube-Solver
 npm install
 
@@ -107,11 +107,11 @@ pip install -r requirements.txt
 python src\main.py
 ```
 
-## 🎮 Usage
+## Usage
 
 ### Two Main Workflows
 1. **Scramble & Solve**
-   - Click "Random Scramble" → "Apply Scramble" → "Find Solution"
+   - Click "Random Scramble" -> "Apply Scramble" -> "Find Solution"
    - Works with both frontend-only and full backend
 
 2. **Manual Configuration**
@@ -135,7 +135,7 @@ fetch('http://localhost:5001/api/solve', {
 
 ```
 
-## 🔧 Cube State Format
+## Cube State Format
 
 Cube states are represented as 54-character strings where each character represents a face color:
 
@@ -146,9 +146,9 @@ Cube states are represented as 54-character strings where each character represe
 - **4**: L (Left/Orange)
 - **5**: B (Back/Blue)
 
-The string follows this face order: U→R→F→D→L→B, with each face in reading order (top-left to bottom-right).
+The string follows this face order: U->R->F->D->L->B, with each face in reading order (top-left to bottom-right).
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 - **Backend Not Starting**: Ensure Python 3.11+ (not 3.8 or 3.9!), port 5001 is free, C++ library built correctly
@@ -206,7 +206,7 @@ set(PYBIND11_FINDPYTHON ON)
 find_package(pybind11 REQUIRED)
 ```
 
-## 🚀 Production Build
+## Production Build
 
 ```sh
 npm run build
@@ -223,6 +223,4 @@ This creates an optimized production build in the `dist/` folder.
 - `package.json` - Node.js dependencies and scripts
 
 For issues or contributions, please open a GitHub issue or pull request.
-
-
 

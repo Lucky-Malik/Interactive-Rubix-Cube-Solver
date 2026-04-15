@@ -1,4 +1,4 @@
-// https://github.com/abhinavdogra21/Rubix-Cube-Solver
+// https://github.com/Lucky-Malik/Interactive-Rubix-Cube-Solver
 import React, { useState, useEffect } from 'react';
 import { CubeState } from './cubeState';
 import './CubeConfigurator.css';
@@ -307,4 +307,3 @@ function CubeConfigurator({ cubeState, onCubeStateChange, fromVideo = false }) {
 }
 
 export default CubeConfigurator;
-
