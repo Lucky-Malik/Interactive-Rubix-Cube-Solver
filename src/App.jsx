@@ -8,9 +8,54 @@ import './App.css';
 
 const API_BASE_URL = 'http://localhost:5001';
 const PLAYBACK_INTERVAL_MS = 420;
+const PATTERN_LIBRARY = [
+  {
+    id: 'checkerboard',
+    name: 'Checkerboard',
+    difficulty: 'Easy',
+    description: 'Alternating sticker colors on every face. Great for showing off symmetry.',
+    algorithm: 'U2 D2 R2 L2 F2 B2'
+  },
+  {
+    id: 'superflip',
+    name: 'Superflip',
+    difficulty: 'Expert',
+    description: 'Every edge is flipped while corners stay in place. A legendary cube pattern.',
+    algorithm: "U R2 F B R B2 R U2 L B2 R U' D' R2 F R' L B2 U2 F2"
+  },
+  {
+    id: 'cube-in-cube',
+    name: 'Cube in a Cube',
+    difficulty: 'Medium',
+    description: 'Creates the illusion of a smaller cube nested inside the larger one.',
+    algorithm: "F L F U' R U F2 L2 U' L' B D' B' L2 U"
+  },
+  {
+    id: 'snake',
+    name: 'Snake',
+    difficulty: 'Easy',
+    description: 'A winding ribbon-like path that wraps around the cube faces.',
+    algorithm: 'F U B U2 L U L2 B D\' R D2 L D\' B R2'
+  },
+  {
+    id: 'crosses',
+    name: 'Crosses',
+    difficulty: 'Medium',
+    description: 'Builds a bold cross motif on every face for a clean geometric look.',
+    algorithm: "L2 R' B2 F2 D2 F2 L2 R2 U2 L2 R2 D2 L2 R2"
+  },
+  {
+    id: 'anaconda',
+    name: 'Anaconda',
+    difficulty: 'Hard',
+    description: 'A dramatic twisting pattern with long color bands and strong contrast.',
+    algorithm: "L U B' U' R L' B R' F B' D R D' F'"
+  }
+];
 
 function App() {
   const [scrambleInput, setScrambleInput] = useState('');
+  const [selectedPatternId, setSelectedPatternId] = useState(PATTERN_LIBRARY[0].id);
   const [currentScramble, setCurrentScramble] = useState('');
   const [solution, setSolution] = useState('');
   const [cubeState, setCubeStateValue] = useState(() => new CubeState());
@@ -145,7 +190,29 @@ function App() {
     }
   };
 
-  const handleApplyScramble = async () => {
+  const selectedPattern = useMemo(
+    () => PATTERN_LIBRARY.find((pattern) => pattern.id === selectedPatternId) ?? PATTERN_LIBRARY[0],
+    [selectedPatternId]
+  );
+
+  const applyMoveSequenceToTimeline = useCallback((moves) => {
+    const baseState = new CubeState();
+    const nextState = baseState.clone();
+    moves.forEach((move) => nextState.applyMove(move));
+
+    setTimelineBaseState(baseState.clone());
+    setTimelineMoves(createTimelineEntries(moves, 'scramble'));
+    setTimelineIndex(moves.length);
+    updateVisualCubeState(nextState);
+    setCurrentScramble(moves.join(' '));
+  }, [createTimelineEntries, updateVisualCubeState]);
+
+  const handleLoadPattern = useCallback((pattern) => {
+    setSelectedPatternId(pattern.id);
+    setScrambleInput(pattern.algorithm);
+  }, []);
+
+  const handleApplyScramble = useCallback(async () => {
     const scrambleMoves = parseMoveSequence(scrambleInput);
     if (scrambleMoves.length === 0) return;
 
@@ -155,21 +222,33 @@ function App() {
     setDetectedFromVideo(false);
 
     try {
-      const baseState = new CubeState();
-      const scrambledState = baseState.clone();
-      scrambleMoves.forEach((move) => scrambledState.applyMove(move));
-
-      setTimelineBaseState(baseState.clone());
-      setTimelineMoves(createTimelineEntries(scrambleMoves, 'scramble'));
-      setTimelineIndex(scrambleMoves.length);
-      updateVisualCubeState(scrambledState);
-      setCurrentScramble(scrambleMoves.join(' '));
+      applyMoveSequenceToTimeline(scrambleMoves);
     } catch (error) {
       console.error('Apply scramble failed:', error);
     } finally {
       window.setTimeout(() => setIsLoading(false), 250);
     }
-  };
+  }, [applyMoveSequenceToTimeline, scrambleInput]);
+
+  const handleApplyPattern = useCallback(async (pattern) => {
+    setSelectedPatternId(pattern.id);
+    setScrambleInput(pattern.algorithm);
+    const scrambleMoves = parseMoveSequence(pattern.algorithm);
+    if (scrambleMoves.length === 0) return;
+
+    setIsLoading(true);
+    setIsTimelinePlaying(false);
+    setSolution('');
+    setDetectedFromVideo(false);
+
+    try {
+      applyMoveSequenceToTimeline(scrambleMoves);
+    } catch (error) {
+      console.error('Apply pattern failed:', error);
+    } finally {
+      window.setTimeout(() => setIsLoading(false), 250);
+    }
+  }, [applyMoveSequenceToTimeline]);
 
   function advancedCubeStateValidation(state) {
     if (typeof state !== 'string' || state.length !== 54) return 'Cube state must be 54 characters.';
@@ -471,6 +550,65 @@ function App() {
                 >
                   Apply Scramble
                 </button>
+              </div>
+              <div className="pattern-library">
+                <div className="pattern-library-header">
+                  <div>
+                    <h3>Pattern Library</h3>
+                    <p>Load showcase patterns like a preset gallery, then apply them to the cube.</p>
+                  </div>
+                  <div className={`pattern-difficulty difficulty-${selectedPattern.difficulty.toLowerCase()}`}>
+                    {selectedPattern.difficulty}
+                  </div>
+                </div>
+                <div className="pattern-featured">
+                  <div className="pattern-featured-copy">
+                    <div className="pattern-featured-title-row">
+                      <strong>{selectedPattern.name}</strong>
+                      <span>{selectedPattern.id.replaceAll('-', ' ')}</span>
+                    </div>
+                    <p>{selectedPattern.description}</p>
+                    <code>{selectedPattern.algorithm}</code>
+                  </div>
+                  <div className="pattern-featured-actions">
+                    <button
+                      className="btn btn-outline"
+                      onClick={() => handleLoadPattern(selectedPattern)}
+                      disabled={isLoading}
+                    >
+                      Load Pattern
+                    </button>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => handleApplyPattern(selectedPattern)}
+                      disabled={isLoading}
+                    >
+                      Apply Pattern
+                    </button>
+                  </div>
+                </div>
+                <div className="pattern-grid">
+                  {PATTERN_LIBRARY.map((pattern) => (
+                    <button
+                      key={pattern.id}
+                      type="button"
+                      className={`pattern-card ${pattern.id === selectedPatternId ? 'selected' : ''}`}
+                      onClick={() => handleLoadPattern(pattern)}
+                    >
+                      <div className="pattern-card-top">
+                        <strong>{pattern.name}</strong>
+                        <span className={`pattern-chip difficulty-${pattern.difficulty.toLowerCase()}`}>
+                          {pattern.difficulty}
+                        </span>
+                      </div>
+                      <p>{pattern.description}</p>
+                      <div className="pattern-card-footer">
+                        <span>{parseMoveSequence(pattern.algorithm).length} moves</span>
+                        <span>Click to preview</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
