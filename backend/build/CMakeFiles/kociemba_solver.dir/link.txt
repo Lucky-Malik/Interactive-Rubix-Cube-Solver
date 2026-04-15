@@ -1,0 +1,1 @@
+/usr/bin/c++  -arch arm64 -bundle -Wl,-headerpad_max_install_names -Xlinker -undefined -Xlinker dynamic_lookup -flto -o kociemba_solver.cpython-311-darwin.so CMakeFiles/kociemba_solver.dir/kociemba_api/src/kociemba_wrapper.cpp.o  libkociemba_lib.a

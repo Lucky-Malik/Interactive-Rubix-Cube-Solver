@@ -1,0 +1,2 @@
+/usr/bin/ar qc libkociemba_lib.a CMakeFiles/kociemba_lib.dir/kociemba_api/src/solver/solve.cpp.o CMakeFiles/kociemba_lib.dir/kociemba_api/src/solver/search.cpp.o CMakeFiles/kociemba_lib.dir/kociemba_api/src/solver/cubiecube.cpp.o CMakeFiles/kociemba_lib.dir/kociemba_api/src/solver/coordcube.cpp.o CMakeFiles/kociemba_lib.dir/kociemba_api/src/solver/facecube.cpp.o CMakeFiles/kociemba_lib.dir/kociemba_api/src/solver/prunetable_helpers.cpp.o CMakeFiles/kociemba_lib.dir/kociemba_api/src/solver/random.cpp.o
+/usr/bin/ranlib libkociemba_lib.a

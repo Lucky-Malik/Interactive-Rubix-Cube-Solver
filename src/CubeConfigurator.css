@@ -1,0 +1,230 @@
+.cube-configurator {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.color-palette {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.palette-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #e6e6e6;
+}
+
+.color-options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.color-option {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.color-option:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.color-option.selected {
+  border-color: #61dafb;
+  transform: scale(1.15);
+  box-shadow: 0 0 0 2px rgba(97, 218, 251, 0.3);
+}
+
+.cube-net {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.net-row {
+  display: flex;
+  gap: 2px;
+}
+
+.net-spacer {
+  width: 90px;
+  height: 90px;
+}
+
+.cube-face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.face-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #ccc;
+  text-align: center;
+  min-height: 16px;
+}
+
+.face-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 1px;
+  width: 90px;
+  height: 90px;
+  background: #000;
+  border: 2px solid #333;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.face-square {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.face-square.center {
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.face-square:hover {
+  opacity: 0.8;
+  transform: scale(0.95);
+  box-shadow: 0 0 0 2px rgba(97, 218, 251, 0.5);
+}
+
+.error-message {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.config-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Button styles to match the original design */
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 140px;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #61dafb, #21a9c7);
+  color: #000;
+  border: 1px solid #61dafb;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #21a9c7, #1890a0);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #e06c75, #c5555e);
+  color: #fff;
+  border: 1px solid #e06c75;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #c5555e, #a8474f);
+  transform: translateY(-1px);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .cube-configurator {
+    padding: 10px;
+  }
+  
+  .cube-net {
+    padding: 10px;
+  }
+  
+  .net-spacer {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .face-grid {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .color-option {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .btn {
+    min-width: 120px;
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+  
+  .config-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .net-spacer {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .face-grid {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .face-label {
+    font-size: 10px;
+  }
+}
+

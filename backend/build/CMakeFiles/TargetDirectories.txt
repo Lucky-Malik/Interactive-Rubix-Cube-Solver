@@ -1,0 +1,4 @@
+/Users/abhinavdogra/Desktop/Projects/Rubix-Cube-Solver/backend/build/CMakeFiles/kociemba_lib.dir
+/Users/abhinavdogra/Desktop/Projects/Rubix-Cube-Solver/backend/build/CMakeFiles/kociemba_solver.dir
+/Users/abhinavdogra/Desktop/Projects/Rubix-Cube-Solver/backend/build/CMakeFiles/edit_cache.dir
+/Users/abhinavdogra/Desktop/Projects/Rubix-Cube-Solver/backend/build/CMakeFiles/rebuild_cache.dir
