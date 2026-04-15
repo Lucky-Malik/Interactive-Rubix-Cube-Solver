@@ -1,221 +1,277 @@
-
 # 3D Interactive Rubik's Cube Solver
 
-A full-stack Rubik's Cube solver with 3D visualization, optimal Kociemba algorithm, and camera-based cube detection.
+An interactive 3D Rubik's Cube solver with move history replay, pattern presets, manual configuration, and backend-powered optimal solving.
+
+## Overview
+
+This project is a full-stack Rubik's Cube app with:
+
+- a React + Vite frontend for 3D cube interaction
+- a move history timeline with undo, redo, play/pause, and scrubbing
+- a built-in scramble pattern library
+- manual cube configuration
+- video-based cube state detection
+- an optional Flask + C++ backend for optimal solving with the Kociemba algorithm
+
+You can run the frontend by itself, or run the frontend and backend together for full solving support.
 
 ## Features
-- **3D Interactive Cube Visualization**: Real-time 3D rendering with smooth animations
-- **Optimal Kociemba Algorithm**: Fast, optimal solutions using C++ backend
-- **Random Scramble Generation**: Generate and apply realistic scrambles
-- **Step-by-Step Solution Animation**: Visualize and step through the solution
-- **Manual Cube Configuration**: Set up any cube state with validation
-- **Camera Detection**: Advanced OpenCV-based cube state detection
-- **Cross-platform**: Works on macOS and Windows
+
+- **3D Interactive Cube**: Rotate, inspect, and interact with the cube in the browser
+- **Move History Timeline**: Scrub through scramble and solution moves like a replay bar
+- **Undo / Redo Controls**: Step backward and forward through move history
+- **Pattern Library**: Load presets like Checkerboard, Superflip, Snake, Cube in a Cube, and more
+- **Random Scramble Generator**: Generate and apply scrambles quickly
+- **Manual Configuration**: Enter custom cube states by hand
+- **Video Detection**: Detect cube colors from camera/video input
+- **Backend Solver Support**: Use the backend for optimal solving on non-trivial states
+- **Fallback Frontend Solve**: Reverse known timeline history when the backend is unavailable
+
+## Tech Stack
+
+- **Frontend**: React, Vite, Three.js
+- **Backend API**: Flask, Flask-CORS
+- **Native Solver**: C++ with pybind11
+
+## Project Structure
+
+```text
+.
+├── src/                      # React frontend
+├── backend/
+│   ├── CMakeLists.txt        # Native solver build config
+│   └── kociemba_api/
+│       ├── requirements.txt  # Python backend dependencies
+│       └── src/
+│           ├── main.py       # Flask API
+│           ├── kociemba_wrapper.cpp
+│           └── solver/       # C++ solver source
+├── package.json
+└── README.md
+```
 
 ## Quick Start
 
-### Frontend Only (Recommended)
+### Frontend Only
+
+This is the fastest way to run the project locally.
+
 ```sh
 git clone https://github.com/Lucky-Malik/Interactive-Rubix-Cube-Solver.git
-cd Rubix-Cube-Solver
+cd Interactive-Rubix-Cube-Solver
 npm install
 npm run dev
 ```
-Open http://localhost:5173
 
-> The frontend includes a fallback solver that works for scrambles generated with the "Random Scramble" button. For custom cube configurations, you'll need the backend.
+Then open:
 
-## Full Setup (With Backend)
+`http://localhost:5173/`
 
-### Prerequisites
-- **Node.js** 16+ and npm
-- **Python** 3.11+ (Required - The compiled C++ module is built for Python 3.11)
-- **CMake** 3.12+
-- **C++ Compiler** (GCC, Clang, or MSVC)
+### What works in frontend-only mode
 
-### macOS Setup
+- 3D cube interaction
+- random scrambles
+- pattern library
+- move history timeline
+- undo / redo / replay controls
+- manual configuration UI
+- video detection UI
+
+### What needs the backend
+
+- solving arbitrary custom cube states
+- optimal Kociemba-based solutions
+
+Without the backend, the app can still reverse move history that already exists in the timeline.
+
+## Full Setup With Backend
+
+### Requirements
+
+- Node.js 18+ recommended
+- npm
+- Python 3
+- CMake 3.12+
+- a C++ compiler
+- pybind11
+
+### 1. Install frontend dependencies
+
 ```sh
-# Install prerequisites (Python 3.11 is required!)
-xcode-select --install
-brew install cmake python@3.11 node
-
-# Clone and build
-git clone https://github.com/Lucky-Malik/Interactive-Rubix-Cube-Solver.git
-cd Rubix-Cube-Solver
 npm install
+```
 
-# Clean up all cache and build artifacts (recommended before every fresh build):
-rm -rf cache
-rm -rf backend/build
-rm -rf backend/kociemba_api/build
-rm -rf backend/kociemba_api/src/solver/cache
-find . -name "kociemba_solver*.so" -delete
+### 2. Install Python backend dependencies
 
-# Build Backend
-cd backend
-rm -rf build
-mkdir build && cd build
-cmake ..
-make -j$(sysctl -n hw.ncpu)
-
-# Copy the built Python module to where main.py expects it
-cp kociemba_solver*.so ../kociemba_api/src/
-
-# Setup Python environment (IMPORTANT: Use Python 3.11!)
-cd ../kociemba_api
-python3.11 -m venv venv
+```sh
+cd backend/kociemba_api
+python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+```
 
-# Start backend
+If `pybind11` is missing during native build, install it too:
+
+```sh
+pip install pybind11
+```
+
+Or on macOS with Homebrew:
+
+```sh
+brew install pybind11
+```
+
+### 3. Build the native solver
+
+From the project root:
+
+```sh
+cd backend
+mkdir -p build
+cd build
+cmake ..
+make
+```
+
+After building, copy the generated solver module into the Flask app source folder:
+
+```sh
+cp kociemba_solver*.so ../kociemba_api/src/
+```
+
+On some systems the extension suffix may vary. Copy the built `kociemba_solver` module that CMake generates into:
+
+`backend/kociemba_api/src/`
+
+### 4. Start the backend
+
+```sh
+cd backend/kociemba_api
+source venv/bin/activate
 cd src
 python main.py
 ```
-Backend: http://localhost:5001
 
-In a new terminal:
+The backend runs at:
+
+`http://localhost:5001/`
+
+### 5. Start the frontend
+
+In a separate terminal:
+
 ```sh
-cd Rubix-Cube-Solver
+cd Interactive-Rubix-Cube-Solver
 npm run dev
 ```
-Frontend: http://localhost:5173
 
-### Windows Setup
-```cmd
-# Prerequisites: Install Visual Studio 2019+ with C++ tools, Python 3.11+, Node.js 16+, CMake
-# IMPORTANT: Make sure to install Python 3.11 specifically!
+Then open:
 
-cd Rubix-Cube-Solver
+`http://localhost:5173/`
+
+## Windows Notes
+
+The frontend should run normally with:
+
+```powershell
 npm install
+npm run dev
+```
 
-# Build backend
-cd backend
-mkdir build && cd build
-cmake .. -G "Visual Studio 16 2019"
-cmake --build . --config Release
-copy Release\kociemba_solver*.pyd ..\kociemba_api\src\kociemba_solver.so
+The backend may require extra setup for:
 
-# Start backend (Use Python 3.11!)
-cd ..\kociemba_api
-py -3.11 -m venv venv
-venv\Scripts\activate
-pip install -r requirements.txt
-python src\main.py
+- Visual Studio C++ Build Tools
+- CMake generator selection
+- Python headers
+- pybind11 discovery
+
+If you only want to explore the UI, run the frontend first and add backend support later.
+
+## API
+
+### `GET /`
+
+Health check endpoint.
+
+### `POST /api/solve`
+
+Solve a cube from a 54-character cube state string.
+
+Example:
+
+```js
+fetch('http://localhost:5001/api/solve', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    cube_state: '000000000111111111222222222333333333444444444555555555'
+  })
+})
+  .then((res) => res.json())
+  .then((data) => console.log(data));
 ```
 
 ## Usage
 
-### Two Main Workflows
-1. **Scramble & Solve**
-   - Click "Random Scramble" -> "Apply Scramble" -> "Find Solution"
-   - Works with both frontend-only and full backend
+### Scramble and Solve
 
-2. **Manual Configuration**
-   - Use the cube configurator to set any cube state
-   - Use camera detection to scan a real cube
-   - Requires backend for optimal solving
+1. Generate a random scramble or enter your own
+2. Click `Apply Scramble`
+3. Click `Find Solution`
+4. Use the move history timeline to replay the result
 
-### API Endpoints
-- `/api/solve` (POST): Solve cube from state string
+### Pattern Library
 
-### Example API Usage
-```js
-// Solve a cube state
-fetch('http://localhost:5001/api/solve', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ cube_state: '000000000111111111222222222333333333444444444555555555' })
-})
-  .then(res => res.json())
-  .then(data => console.log(data.solution));
+1. Open the `Scramble` section
+2. Choose a preset pattern
+3. Click `Load Pattern` to preview it
+4. Click `Apply Pattern` to put it on the cube
 
-```
+### Manual Configuration
 
-## Cube State Format
+1. Expand `Manual Configuration`
+2. Paint the cube stickers
+3. Apply the configuration
+4. Solve it with the backend enabled
 
-Cube states are represented as 54-character strings where each character represents a face color:
+### Video Detection
 
-- **0**: U (Up/White)
-- **1**: R (Right/Red)  
-- **2**: F (Front/Green)
-- **3**: D (Down/Yellow)
-- **4**: L (Left/Orange)
-- **5**: B (Back/Blue)
-
-The string follows this face order: U->R->F->D->L->B, with each face in reading order (top-left to bottom-right).
+Use the video section to scan a real cube, then review and correct the detected colors before solving.
 
 ## Troubleshooting
 
-### Common Issues
-- **Backend Not Starting**: Ensure Python 3.11+ (not 3.8 or 3.9!), port 5001 is free, C++ library built correctly
-- **"No module named 'kociemba_solver'"**: Python version mismatch - ensure you're using Python 3.11
-- **Virtual Environment Issues**: Delete venv folder and recreate with `python3.11 -m venv venv`
-- **Package Installation Errors**: Some packages require Python 3.10+ - ensure you're using Python 3.11
-- **Frontend Build Errors**: Delete `node_modules`, run `npm install` again
-- **C++ Compilation Errors**: Ensure CMake and compatible compiler installed
-- **pybind11 Issues**: Install via `brew install pybind11` (macOS) or `pip install pybind11`
+### Frontend does not start
 
-### Clean Build
-If you encounter build issues, clean everything first:
-```sh
-rm -rf node_modules package-lock.json
-rm -rf backend/build
-rm -rf backend/kociemba_api/build
-rm -rf backend/kociemba_api/venv
-find . -name "*.so" -delete
-find . -name "__pycache__" -delete
-```
-
-### Python Version Issues
-The most common issue is Python version mismatch. The compiled C++ module requires Python 3.11:
-
-**Check your Python version:**
-```sh
-python3.11 --version  # Should show Python 3.11.x
-```
-
-**If you don't have Python 3.11:**
-```sh
-# macOS
-brew install python@3.11
-
-# Ubuntu/Debian
-sudo apt install python3.11 python3.11-venv
-
-# Windows
-# Download from python.org and install Python 3.11
-```
-
-**Recreate virtual environment with correct Python:**
-```sh
-cd backend/kociemba_api
-rm -rf venv
-python3.11 -m venv venv  # Use python3.11 specifically!
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-### CMake Issues
-If you see Python config errors, ensure your `CMakeLists.txt` includes:
-```cmake
-set(PYBIND11_FINDPYTHON ON)
-find_package(pybind11 REQUIRED)
-```
-
-## Production Build
+Try:
 
 ```sh
-npm run build
+rm -rf node_modules
+npm install
+npm run dev
 ```
 
-This creates an optimized production build in the `dist/` folder.
+### Backend says solver is unavailable
 
----
+That usually means the compiled `kociemba_solver` native module was not built or not copied into:
 
-**Project Structure:**
-- `src/` - React frontend source code
-- `backend/` - C++ Kociemba solver with Python API
-- `dist/` - Production build output
-- `package.json` - Node.js dependencies and scripts
+`backend/kociemba_api/src/`
 
-For issues or contributions, please open a GitHub issue or pull request.
+### CMake or Python header errors
+
+This project currently depends on local Python/C++ toolchain configuration. If CMake cannot find the right Python headers or pybind11, install pybind11 and verify your Python development environment is available on your machine.
+
+### Only the frontend is working
+
+That is expected if the Flask backend is not running. The app will still load and most UI features will work, but optimal solving for arbitrary states will not.
+
+## Current Status
+
+The frontend setup is correct and can be run locally with:
+
+```sh
+npm install
+npm run dev
+```
+
+The backend setup is optional, but it depends on your local C++ / Python / pybind11 environment being configured correctly.
