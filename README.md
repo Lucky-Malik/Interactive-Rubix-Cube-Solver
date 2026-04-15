@@ -3,10 +3,6 @@
 
 A full-stack Rubik's Cube solver with 3D visualization, optimal Kociemba algorithm, and camera-based cube detection.
 
-<video src="https://github.com/user-attachments/assets/c70d1f03-177a-4da5-a45c-88777340712f" controls width="700">
-  Your browser does not support the video tag.
-</video>
-
 ## Features
 - **3D Interactive Cube Visualization**: Real-time 3D rendering with smooth animations
 - **Optimal Kociemba Algorithm**: Fast, optimal solutions using C++ backend
@@ -223,4 +219,3 @@ This creates an optimized production build in the `dist/` folder.
 - `package.json` - Node.js dependencies and scripts
 
 For issues or contributions, please open a GitHub issue or pull request.
-
